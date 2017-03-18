@@ -418,6 +418,10 @@ void Si7021_cli_init(print_t func)
   }
 }
 
+/*
+*  Note that the input is a single byte passed by reference 
+*  to be able to clear it.
+*/
 void Si7021_cli_engine(uint8_t* char_in)
 {
   static uint8_t input_buffer[20];
@@ -447,7 +451,8 @@ void Si7021_cli_engine(uint8_t* char_in)
         param = 0;
       }
     }
-
+    
+    /* clear input */
     *char_in = 0;
 
     if(ready)
