@@ -10,7 +10,8 @@
 *
 * INPUTS :
 *       PARAMETERS:
-*            print_t              func       function pointer to the transmit function to be used
+*            uint8_t*              buf      pointer to the output data buffer
+*            uint16_t              len      number of bytes to be sent
 *       GLOBALS :
 *            None
 * OUTPUTS :
