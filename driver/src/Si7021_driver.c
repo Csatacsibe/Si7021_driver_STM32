@@ -36,6 +36,51 @@ static uint16_t convert_to_uint16(uint8_t bytes[])
   return (uint16_t)((bytes[0]<<8) | bytes[1]);
 }
 
+static int8_t r_reg(Si7021_registers_t reg)
+{
+  uint8_t cmd;
+  uint8_t* data;
+
+  if(reg == User_Register_1)
+  {
+    cmd = R_RHT_U_reg;
+    data = &(user_register_1);
+  }
+  else if(reg == Heater_Control_Register)
+  {
+    cmd = R_Heater_C_reg;
+    data = &(heater_control_register);
+  }
+  else
+    return -1;
+
+  if(HAL_OK != HAL_I2C_Mem_Read(&hi2c1, I2C_ADDR, cmd, 1, data, 1, 10000))
+    return -1;
+  else
+    return 0;
+}
+
+static int8_t w_reg(uint8_t value, Si7021_registers_t reg)
+{
+  uint16_t cmd;
+
+  if(reg == User_Register_1)
+  {
+    cmd = W_RHT_U_reg;
+  }
+  else if(reg == Heater_Control_Register)
+  {
+    cmd = W_Heater_C_reg;
+  }
+  else
+    return -1;
+
+  if(HAL_OK != HAL_I2C_Mem_Write(&hi2c1, I2C_ADDR, cmd, 1, &value, 1, 10000))
+    return -1;
+  else
+    return 0;
+}
+
 int8_t r_single_Si7021(float* data, Si7021_measurement_type_t type)
 {
   uint8_t cmd;
@@ -112,51 +157,6 @@ int8_t r_firmware_rev_Si7021()
     case 0x20: return 2;
     default: return -1;
   }
-}
-
-static int8_t r_reg(Si7021_registers_t reg)
-{
-  uint8_t cmd;
-  uint8_t* data;
-
-  if(reg == User_Register_1)
-  {
-    cmd = R_RHT_U_reg;
-    data = &(user_register_1);
-  }
-  else if(reg == Heater_Control_Register)
-  {
-    cmd = R_Heater_C_reg;
-    data = &(heater_control_register);
-  }
-  else
-    return -1;
-
-  if(HAL_OK != HAL_I2C_Mem_Read(&hi2c1, I2C_ADDR, cmd, 1, data, 1, 10000))
-    return -1;
-  else
-    return 0;
-}
-
-static int8_t w_reg(uint8_t value, Si7021_registers_t reg)
-{
-  uint16_t cmd;
-
-  if(reg == User_Register_1)
-  {
-    cmd = W_RHT_U_reg;
-  }
-  else if(reg == Heater_Control_Register)
-  {
-    cmd = W_Heater_C_reg;
-  }
-  else
-    return -1;
-
-  if(HAL_OK != HAL_I2C_Mem_Write(&hi2c1, I2C_ADDR, cmd, 1, &value, 1, 10000))
-    return -1;
-  else
-    return 0;
 }
 
 int8_t set_resolution_Si7021(Si7021_resolution_t resolution)
